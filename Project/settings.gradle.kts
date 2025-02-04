@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SOOP_ASSIGNMENT"
+rootProject.name = "SOOP"
 include(":app")

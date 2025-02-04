@@ -1,4 +1,4 @@
-package com.jaehan.soop_assignment.ui.theme
+package com.jaehan.soop.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

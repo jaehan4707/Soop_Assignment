@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.jaehan.soop_assignment"
+    namespace = "com.jaehan.soop"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.jaehan.soop_assignment"
+        applicationId = "com.jaehan.soop"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
