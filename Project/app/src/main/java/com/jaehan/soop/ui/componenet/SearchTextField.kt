@@ -10,6 +10,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -29,6 +30,7 @@ import com.jaehan.soop.ui.theme.lightGray
  * @param onClickedClear : x 버튼을 누를 경우 람다식
  * @param onClickedSearch : 키보드 완료 버튼을 누를 경우 람다식
  * @param placeHolder : placeHolder
+ * @param focusManager : focusManager
  */
 @Composable
 fun SearchTextField(
@@ -38,8 +40,8 @@ fun SearchTextField(
     onClickedClear: () -> Unit = {},
     onClickedSearch: (String) -> Unit = {},
     placeHolder: String = "",
+    focusManager: FocusManager,
 ) {
-    val focusManager = LocalFocusManager.current
     OutlinedTextField(
         modifier =
         modifier
@@ -76,6 +78,8 @@ fun SearchTextField(
 @Preview(showSystemUi = true, name = "SearchTextField")
 fun SearchTextFieldPreview() {
     SOOP_Theme {
-        SearchTextField()
+        SearchTextField(
+            focusManager = LocalFocusManager.current
+        )
     }
 }
