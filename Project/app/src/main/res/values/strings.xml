@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SOOP_ASSIGNMENT</string>
+    <string name="search_placeholder">검색어를 입력해주세요.</string>
+    <string name="start_count">%.1fk</string>
+</resources>
