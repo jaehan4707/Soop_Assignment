@@ -1,14 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
-    namespace = "com.jaehan.soop_assignment"
+    namespace = "com.jaehan.soop"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.jaehan.soop_assignment"
+        applicationId = "com.jaehan.soop"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -66,4 +67,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // glide
+    implementation(libs.glide.compose)
+
+    // serialization
+    implementation(libs.kotlinx.serialization.json)
 }

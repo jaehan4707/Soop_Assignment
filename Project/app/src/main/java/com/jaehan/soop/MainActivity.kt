@@ -1,4 +1,4 @@
-package com.jaehan.soop_assignment
+package com.jaehan.soop
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,17 +11,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jaehan.soop_assignment.ui.theme.SOOP_ASSIGNMENTTheme
+import com.jaehan.soop.ui.screen.home.MainScreen
+import com.jaehan.soop.ui.theme.SOOP_Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SOOP_ASSIGNMENTTheme {
+            SOOP_Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    MainScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -41,7 +41,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    SOOP_ASSIGNMENTTheme {
+    SOOP_Theme {
         Greeting("Android")
     }
 }
