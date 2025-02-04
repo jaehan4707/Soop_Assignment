@@ -34,9 +34,9 @@ fun SearchItem(
     userImage: String,
     repositoryName: String,
     description: String,
-    star: Double,
+    star: Long,
     language: String,
-    searchText: String,
+    userName: String,
 ) {
     Column(
         modifier = modifier.padding(horizontal = 15.dp),
@@ -58,12 +58,12 @@ fun SearchItem(
             )
 
             Text(
-                text = repositoryName,
+                text = userName,
                 color = Color.Gray,
                 style = Typography.labelLarge,
             )
         }
-        Text(text = searchText, style = Typography.bodyMedium)
+        Text(text = repositoryName, style = Typography.bodyMedium)
         Text(text = description, style = Typography.labelSmall)
         Row(
             modifier = Modifier, verticalAlignment = Alignment.CenterVertically,
@@ -96,9 +96,9 @@ fun SearchItemPreview() {
             userImage = "https://avatars.githubusercontent.com/u/99114456?v=4",
             repositoryName = "open-android",
             description = "description",
-            star = 14557.0,
+            star = 14557,
             language = "kotlin",
-            searchText = "android"
+            userName = "android"
         )
     }
 }
