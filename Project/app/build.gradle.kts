@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
@@ -69,4 +70,7 @@ dependencies {
 
     // glide
     implementation(libs.glide.compose)
+
+    // serialization
+    implementation(libs.kotlinx.serialization.json)
 }
