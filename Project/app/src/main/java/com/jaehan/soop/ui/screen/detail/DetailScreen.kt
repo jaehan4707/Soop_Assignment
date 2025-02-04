@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jaehan.soop.ui.screen.detail.layout.RepositoryStatsRow
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 import com.jaehan.soop.ui.theme.lightGray
@@ -61,6 +63,8 @@ fun DetailScreen(
         }
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+        RepositoryStatsRow(Modifier.fillMaxHeight(0.15f), star, watchers, fork)
+        HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
     }
 }
 
@@ -81,9 +85,9 @@ fun DetailScreenPreview() {
                 "12314123",
                 "123123"
             ),
-            star = 39000,
-            watchers = 39000,
-            fork = 31000,
+            star = 3900,
+            watchers = 3900,
+            fork = 3100,
             description = "asdasedadsadsad",
             userProfileImage = "https://avatars.githubusercontent.com/u/99114456?v=4"
         )
