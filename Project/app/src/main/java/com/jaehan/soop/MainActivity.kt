@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jaehan.soop.ui.screen.MainScreen
+import com.jaehan.soop.ui.screen.home.MainScreen
 import com.jaehan.soop.ui.theme.SOOP_Theme
 
 class MainActivity : ComponentActivity() {
