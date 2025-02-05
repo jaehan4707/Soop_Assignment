@@ -1,9 +1,9 @@
 package com.jaehan.soop.domain.repository
 
-import com.jaehan.soop.domain.model.ApiResponse
+import androidx.paging.PagingData
 import com.jaehan.soop.domain.model.Repo
 import kotlinx.coroutines.flow.Flow
 
 interface RepoRepository {
-    suspend fun searchRepository(query: String): Flow<ApiResponse<List<Repo>>>
+    suspend fun searchRepository(query: String): Flow<PagingData<Repo>>
 }
