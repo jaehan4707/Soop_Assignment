@@ -1,10 +1,12 @@
 package com.jaehan.soop.ui.screen.detail
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaehan.soop.domain.model.ApiResponse
 import com.jaehan.soop.domain.repository.RepoRepository
+import com.jaehan.soop.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
+    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -26,6 +29,8 @@ class DetailViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
     private val _uiEvent = MutableSharedFlow<DetailUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
+    private val _bottomDetailUiState = MutableStateFlow(BottomDetailUiState())
+    val bottomDetailUiState = _bottomDetailUiState.asStateFlow()
 
     init {
         val owner = savedStateHandle["owner"] ?: ""
@@ -62,6 +67,34 @@ class DetailViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    fun getUserInfo(userName: String) {
+        viewModelScope.launch {
+            userRepository.getUserInfo(userName).collectLatest { response ->
+                when (response) {
+                    is ApiResponse.Error -> {
+                        _uiEvent.emit(DetailUiEvent.ShowError(response.errorMessage))
+                    }
+
+                    is ApiResponse.Success -> {
+                        val user = response.data
+                        _bottomDetailUiState.update {
+                            it.copy(
+                                followers = user.followers,
+                                following = user.following,
+                                repositoryCount = user.repositoryCount,
+                                bio = user.bio,
+                                userName = userName,
+                                userProfileImage = user.userProfileImage,
+                            )
+                        }
+                        Log.d("test","bottom : ${bottomDetailUiState.value}")
+                    }
+                }
+
+            }
         }
     }
 }
