@@ -9,7 +9,7 @@ data class SearchResult(
     val repositoryName: String? = "",
     @SerializedName("description")
     val description: String? = "",
-    @SerializedName("stargazersCount")
+    @SerializedName("stargazers_count")
     val starCount: Long? = 0,
     @SerializedName("language")
     val language: String? = "",
