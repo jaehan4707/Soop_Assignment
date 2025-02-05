@@ -1,6 +1,5 @@
 package com.jaehan.soop.ui.screen.detail
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -90,10 +89,29 @@ class DetailViewModel @Inject constructor(
                                 userProfileImage = user.userProfileImage,
                             )
                         }
-                        Log.d("test","bottom : ${bottomDetailUiState.value}")
                     }
                 }
 
+            }
+        }
+    }
+
+    fun getUserRepositories(userName: String) {
+        viewModelScope.launch {
+            userRepository.getUserRepositories(userName).collectLatest { response ->
+                when (response) {
+                    is ApiResponse.Error -> {
+                        _uiEvent.emit(DetailUiEvent.ShowError(response.errorMessage))
+                    }
+
+                    is ApiResponse.Success -> {
+                        _bottomDetailUiState.update {
+                            it.copy(
+                                language = response.data
+                            )
+                        }
+                    }
+                }
             }
         }
     }

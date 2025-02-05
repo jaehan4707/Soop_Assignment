@@ -64,11 +64,12 @@ fun DetailRoute(
             userProfileImage = uiState.userProfileImage,
             userName = uiState.userName,
             getUserInfo = viewModel::getUserInfo,
+            getUserRepositories = viewModel::getUserRepositories,
             following = bottomDetailUiState.following,
             followers = bottomDetailUiState.followers,
             repositories = bottomDetailUiState.repositoryCount,
             bio = bottomDetailUiState.bio,
-            language = listOf(),
+            language = bottomDetailUiState.language,
         )
     }
 }
@@ -86,6 +87,7 @@ fun DetailScreen(
     userProfileImage: String,
     userName: String,
     getUserInfo: (String) -> Unit,
+    getUserRepositories: (String) -> Unit,
     followers: Long,
     following: Long,
     language: List<String>,
@@ -128,6 +130,7 @@ fun DetailScreen(
             userName = userName,
             onClickedMore = {
                 isOpenBottomSheet = true
+                getUserRepositories(it)
                 getUserInfo(it)
             },
         )
@@ -163,6 +166,7 @@ fun DetailScreenPreview() {
             userProfileImage = "https://avatars.githubusercontent.com/u/99114456?v=4",
             userName = "jaehan4707",
             getUserInfo = {},
+            getUserRepositories = {},
             followers = 0,
             following = 0,
             language = listOf(),
