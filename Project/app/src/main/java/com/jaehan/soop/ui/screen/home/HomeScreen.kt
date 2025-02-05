@@ -1,5 +1,6 @@
 package com.jaehan.soop.ui.screen.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,7 @@ fun HomeRoute(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     onShowError: (String) -> Unit = {},
+    onNavigateToDetail: (String, String) -> Unit = { owner, repositoryName -> },
 ) {
     val query = viewModel.query.collectAsStateWithLifecycle()
     val pageRepositories = viewModel.repositories.collectAsLazyPagingItems()
@@ -53,6 +55,7 @@ fun HomeRoute(
         updateQuery = viewModel::updateSearchText,
         onShowError = onShowError,
         pageRepositories = pageRepositories,
+        onNavigateToDetail = onNavigateToDetail,
     )
 }
 
@@ -65,6 +68,7 @@ fun HomeContent(
     updateQuery: (String) -> Unit,
     onShowError: (String) -> Unit = {},
     pageRepositories: LazyPagingItems<Repo>,
+    onNavigateToDetail: (String, String) -> Unit = { owner, repositoryName -> },
 ) {
     LaunchedEffect(uiEvent) {
         uiEvent.collectLatest { event ->
@@ -83,6 +87,7 @@ fun HomeContent(
         updateQuery = updateQuery,
         query = query,
         onShowError = onShowError,
+        onNavigateToDetail = onNavigateToDetail,
     )
 }
 
@@ -95,6 +100,7 @@ fun HomeScreen(
     updateQuery: (String) -> Unit = {},
     query: String = "",
     onShowError: (String) -> Unit = {},
+    onNavigateToDetail: (String, String) -> Unit = { owner, repositoryName -> },
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -146,6 +152,10 @@ fun HomeScreen(
                                     star = repo.starCount,
                                     language = repo.language,
                                     userName = repo.userName,
+                                    onClick = {
+                                        Log.d("test","clcickckck")
+                                        onNavigateToDetail(repo.userName, repo.repositoryName)
+                                    }
                                 )
                                 Spacer(modifier = Modifier.height(3.dp))
                                 HorizontalDivider(
@@ -154,7 +164,6 @@ fun HomeScreen(
                                     color = Color.Gray
                                 )
                             }
-
                         }
                     }
                 }

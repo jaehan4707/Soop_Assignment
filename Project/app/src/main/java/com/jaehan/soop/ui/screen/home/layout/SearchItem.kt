@@ -2,6 +2,7 @@ package com.jaehan.soop.ui.screen.home.layout
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,9 +39,12 @@ fun SearchItem(
     star: Long,
     language: String,
     userName: String,
+    onClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 15.dp),
+        modifier = modifier
+            .padding(horizontal = 15.dp)
+            .clickable { onClick() },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
@@ -103,7 +107,8 @@ fun SearchItemPreview() {
             description = "description",
             star = 14557,
             language = "kotlin",
-            userName = "android"
+            userName = "android",
+            onClick = {},
         )
     }
 }
