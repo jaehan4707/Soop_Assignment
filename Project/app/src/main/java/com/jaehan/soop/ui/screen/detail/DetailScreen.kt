@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
@@ -21,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaehan.soop.ui.screen.detail.layout.RepositoryStatsRow
+import com.jaehan.soop.ui.screen.detail.layout.UserProfile
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 import com.jaehan.soop.ui.theme.lightGray
@@ -35,6 +35,7 @@ fun DetailScreen(
     fork: Long,
     description: String,
     userProfileImage: String,
+    userName: String,
 ) {
     Column(
         modifier =
@@ -42,6 +43,7 @@ fun DetailScreen(
             .fillMaxSize()
             .background(color = lightGray)
             .padding(vertical = 20.dp, horizontal = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
         Text(text = repositoryName, style = Typography.titleLarge)
         LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -61,10 +63,19 @@ fun DetailScreen(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
         RepositoryStatsRow(Modifier.fillMaxHeight(0.15f), star, watchers, fork)
         HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+        Spacer(modifier = Modifier.weight(0.05f))
+        UserProfile(
+            modifier = Modifier,
+            userProfileImage = userProfileImage,
+            userName = userName,
+            onClickedMore = {}
+        )
+        Spacer(modifier = Modifier.weight(0.05f))
+        HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
@@ -89,7 +100,8 @@ fun DetailScreenPreview() {
             watchers = 3900,
             fork = 3100,
             description = "asdasedadsadsad",
-            userProfileImage = "https://avatars.githubusercontent.com/u/99114456?v=4"
+            userProfileImage = "https://avatars.githubusercontent.com/u/99114456?v=4",
+            userName = "jaehan4707"
         )
     }
 }
