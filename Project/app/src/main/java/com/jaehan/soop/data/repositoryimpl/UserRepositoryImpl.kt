@@ -29,4 +29,26 @@ class UserRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getUserRepositories(userName: String): Flow<ApiResponse<List<String>>> =
+        flow {
+            val response = safeApiCall(
+                apiCall = { githubApi.getUserRepositories(userName) },
+                default = listOf()
+            )
+            when (response) {
+                is ApiResponse.Error -> {
+                    emit(response)
+                }
+
+                is ApiResponse.Success -> {
+                    emit(
+                        ApiResponse.Success(data =
+                        response.data.mapNotNull {
+                            it.language
+                        })
+                    )
+                }
+            }
+        }
 }

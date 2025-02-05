@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
     suspend fun getUserInfo(userName: String): Flow<ApiResponse<User>>
+    suspend fun getUserRepositories(userName: String): Flow<ApiResponse<List<String>>>
 }

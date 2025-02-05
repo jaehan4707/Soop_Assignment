@@ -25,5 +25,10 @@ interface GithubApi {
     @GET("users/{username}")
     suspend fun getUserInfo(
         @Path("username") userName: String,
-    ) : Response<GetUserInfoResponse>
+    ): Response<GetUserInfoResponse>
+
+    @GET("users/{username}/repos")
+    suspend fun getUserRepositories(
+        @Path("username") userName: String,
+    ): Response<List<GetRepositoryInfoResponse>>
 }
