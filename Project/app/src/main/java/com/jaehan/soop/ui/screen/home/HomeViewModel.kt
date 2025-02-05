@@ -2,16 +2,17 @@ package com.jaehan.soop.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jaehan.soop.domain.model.ApiResponse
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.jaehan.soop.domain.model.Repo
 import com.jaehan.soop.domain.repository.RepoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,33 +21,27 @@ class HomeViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState = _uiState.asStateFlow()
     private val _uiEvent = MutableSharedFlow<HomeUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
+    private val _query = MutableStateFlow("")
+    val query = _query.asStateFlow()
+    private val _repositories = MutableStateFlow<PagingData<Repo>>(PagingData.empty())
+    val repositories = _repositories.asStateFlow()
 
     fun updateSearchText(query: String) {
-        _uiState.update { it.copy(query = query) }
+        _query.value = query
     }
-
 
     fun searchRepositories(query: String) {
         viewModelScope.launch {
-            repoRepository.searchRepository(query).onStart {
-                _uiState.update { it.copy(isLoading = true) }
-            }.collectLatest { response ->
-                when (response) {
-                    is ApiResponse.Error -> {
-                        _uiEvent.emit(HomeUiEvent.ShowError(response.errorMessage))
-                    }
-
-                    is ApiResponse.Success -> {
-                        _uiState.update {
-                            it.copy(isLoading = false, results = response.data)
-                        }
-                    }
+            repoRepository.searchRepository(query)
+                .cachedIn(viewModelScope)
+                .catch {
+                    _uiEvent.emit(HomeUiEvent.ShowError(it.message ?: ""))
                 }
-            }
+                .collectLatest { pagingData ->
+                    _repositories.value = pagingData
+                }
         }
     }
 }
