@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaehan.soop.domain.model.ApiResponse
 import com.jaehan.soop.domain.repository.RepoRepository
+import com.jaehan.soop.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
+    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -26,6 +29,8 @@ class DetailViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
     private val _uiEvent = MutableSharedFlow<DetailUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
+    private val _bottomDetailUiState = MutableStateFlow(BottomDetailUiState())
+    val bottomDetailUiState = _bottomDetailUiState.asStateFlow()
 
     init {
         val owner = savedStateHandle["owner"] ?: ""
@@ -61,6 +66,47 @@ class DetailViewModel @Inject constructor(
                             }
                         }
                     }
+                }
+        }
+    }
+
+    fun getUserInfoAndRepositories(userName: String) {
+        viewModelScope.launch {
+            val userInfoFlow = userRepository.getUserInfo(userName)
+            val userReposFlow = userRepository.getUserRepositories(userName)
+            userInfoFlow
+                .combine(userReposFlow) { userInfoResponse, userReposResponse ->
+                    Pair(userInfoResponse, userReposResponse)
+                }.collectLatest { (userInfoResponse, userReposResponse) ->
+                    var state = when (userInfoResponse) {
+                        is ApiResponse.Error -> {
+                            _uiEvent.emit(DetailUiEvent.ShowError(userInfoResponse.errorMessage))
+                            BottomDetailUiState()
+                        }
+
+                        is ApiResponse.Success -> {
+                            val user = userInfoResponse.data
+                            BottomDetailUiState().copy(
+                                followers = user.followers,
+                                following = user.following,
+                                repositoryCount = user.repositoryCount,
+                                bio = user.bio,
+                                userName = userName,
+                                userProfileImage = user.userProfileImage,
+                            )
+                        }
+                    }
+
+                    when (userReposResponse) {
+                        is ApiResponse.Error -> {
+                            _uiEvent.emit(DetailUiEvent.ShowError(userReposResponse.errorMessage))
+                        }
+
+                        is ApiResponse.Success -> {
+                            state = state.copy(language = userReposResponse.data)
+                        }
+                    }
+                    _bottomDetailUiState.value = state
                 }
         }
     }

@@ -12,6 +12,7 @@ data class GetRepositoryInfoResponse(
     val description: String? = "",
     val topics: List<String>? = null,
     val name: String? = null,
+    val language: String? = null,
 )
 
 
