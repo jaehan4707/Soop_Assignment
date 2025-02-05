@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -69,18 +70,23 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun getUserInfo(userName: String) {
+    fun getUserInfoAndRepositories(userName: String) {
         viewModelScope.launch {
-            userRepository.getUserInfo(userName).collectLatest { response ->
-                when (response) {
-                    is ApiResponse.Error -> {
-                        _uiEvent.emit(DetailUiEvent.ShowError(response.errorMessage))
-                    }
+            val userInfoFlow = userRepository.getUserInfo(userName)
+            val userReposFlow = userRepository.getUserRepositories(userName)
+            userInfoFlow
+                .combine(userReposFlow) { userInfoResponse, userReposResponse ->
+                    Pair(userInfoResponse, userReposResponse)
+                }.collectLatest { (userInfoResponse, userReposResponse) ->
+                    var state = when (userInfoResponse) {
+                        is ApiResponse.Error -> {
+                            _uiEvent.emit(DetailUiEvent.ShowError(userInfoResponse.errorMessage))
+                            BottomDetailUiState()
+                        }
 
-                    is ApiResponse.Success -> {
-                        val user = response.data
-                        _bottomDetailUiState.update {
-                            it.copy(
+                        is ApiResponse.Success -> {
+                            val user = userInfoResponse.data
+                            BottomDetailUiState().copy(
                                 followers = user.followers,
                                 following = user.following,
                                 repositoryCount = user.repositoryCount,
@@ -90,29 +96,18 @@ class DetailViewModel @Inject constructor(
                             )
                         }
                     }
-                }
 
-            }
-        }
-    }
+                    when (userReposResponse) {
+                        is ApiResponse.Error -> {
+                            _uiEvent.emit(DetailUiEvent.ShowError(userReposResponse.errorMessage))
+                        }
 
-    fun getUserRepositories(userName: String) {
-        viewModelScope.launch {
-            userRepository.getUserRepositories(userName).collectLatest { response ->
-                when (response) {
-                    is ApiResponse.Error -> {
-                        _uiEvent.emit(DetailUiEvent.ShowError(response.errorMessage))
-                    }
-
-                    is ApiResponse.Success -> {
-                        _bottomDetailUiState.update {
-                            it.copy(
-                                language = response.data
-                            )
+                        is ApiResponse.Success -> {
+                            state = state.copy(language = userReposResponse.data)
                         }
                     }
+                    _bottomDetailUiState.value = state
                 }
-            }
         }
     }
 }
