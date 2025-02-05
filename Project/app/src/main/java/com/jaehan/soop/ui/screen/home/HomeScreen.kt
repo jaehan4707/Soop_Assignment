@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.jaehan.soop.R
 import com.jaehan.soop.domain.model.Repo
 import com.jaehan.soop.ui.componenet.LoadingDialog
@@ -34,20 +36,23 @@ import com.jaehan.soop.ui.theme.lightGray
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
+
 @Composable
 fun HomeRoute(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     onShowError: (String) -> Unit = {},
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val query = viewModel.query.collectAsStateWithLifecycle()
+    val pageRepositories = viewModel.repositories.collectAsLazyPagingItems()
     HomeContent(
         modifier = modifier,
         onClickedSearch = viewModel::searchRepositories,
-        uiState = uiState.value,
+        query = query.value,
         uiEvent = viewModel.uiEvent,
         updateQuery = viewModel::updateSearchText,
         onShowError = onShowError,
+        pageRepositories = pageRepositories,
     )
 }
 
@@ -55,10 +60,11 @@ fun HomeRoute(
 fun HomeContent(
     modifier: Modifier,
     onClickedSearch: (String) -> Unit,
-    uiState: HomeUiState,
+    query: String,
     uiEvent: SharedFlow<HomeUiEvent>,
     updateQuery: (String) -> Unit,
     onShowError: (String) -> Unit = {},
+    pageRepositories: LazyPagingItems<Repo>,
 ) {
     LaunchedEffect(uiEvent) {
         uiEvent.collectLatest { event ->
@@ -73,10 +79,10 @@ fun HomeContent(
     HomeScreen(
         modifier = modifier,
         onClickedSearch = onClickedSearch,
-        results = uiState.results,
+        pageRepositories = pageRepositories,
         updateQuery = updateQuery,
-        query = uiState.query,
-        isLoading = uiState.isLoading,
+        query = query,
+        onShowError = onShowError,
     )
 }
 
@@ -84,13 +90,14 @@ fun HomeContent(
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    results: List<Repo> = listOf(),
+    pageRepositories: LazyPagingItems<Repo>? = null,
     onClickedSearch: (String) -> Unit = {},
     updateQuery: (String) -> Unit = {},
     query: String = "",
-    isLoading: Boolean = false,
+    onShowError: (String) -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
+
     Column(
         modifier =
         modifier
@@ -113,34 +120,43 @@ fun HomeScreen(
             focusManager = focusManager,
             onClickedSearch = onClickedSearch,
         )
-        if (isLoading) {
-            LoadingDialog(modifier = Modifier)
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(all = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                itemsIndexed(
-                    items = results,
-                    key = { _, result ->
-                        result.id
+        pageRepositories?.let { repositories ->
+            when (repositories.loadState.refresh) {
+                is LoadState.Loading -> {
+                    LoadingDialog(modifier = Modifier.fillMaxSize())
+                }
+
+                is LoadState.Error -> {
+                    onShowError("로딩 오류!")
+                }
+
+                else -> {
+                    LazyColumn(
+                        contentPadding = PaddingValues(all = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(repositories.itemCount) { index ->
+                            val item = repositories[index]
+                            item?.let { repo ->
+                                SearchItem(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    userImage = repo.userProfileImage,
+                                    repositoryName = repo.repositoryName,
+                                    description = repo.description,
+                                    star = repo.starCount,
+                                    language = repo.language,
+                                    userName = repo.userName,
+                                )
+                                Spacer(modifier = Modifier.height(3.dp))
+                                HorizontalDivider(
+                                    modifier = Modifier,
+                                    thickness = 1.dp,
+                                    color = Color.Gray
+                                )
+                            }
+
+                        }
                     }
-                ) { _, result ->
-                    SearchItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        userImage = result.userProfileImage,
-                        repositoryName = result.repositoryName,
-                        description = result.description,
-                        star = result.starCount,
-                        language = result.language,
-                        userName = result.userName,
-                    )
-                    Spacer(modifier = Modifier.height(3.dp))
-                    HorizontalDivider(
-                        modifier = Modifier,
-                        thickness = 1.dp,
-                        color = Color.Gray
-                    )
                 }
             }
         }
