@@ -1,6 +1,7 @@
 package com.jaehan.soop.data.network.api
 
 import com.jaehan.soop.data.network.response.GetRepositoryInfoResponse
+import com.jaehan.soop.data.network.response.GetUserInfoResponse
 import com.jaehan.soop.data.network.response.SearchRepositoriesResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -20,4 +21,9 @@ interface GithubApi {
         @Path("owner") owner: String,
         @Path("repo") repositoryName: String,
     ): Response<GetRepositoryInfoResponse>
+
+    @GET("users/{username}")
+    suspend fun getUserInfo(
+        @Path("username") userName: String,
+    ) : Response<GetUserInfoResponse>
 }
