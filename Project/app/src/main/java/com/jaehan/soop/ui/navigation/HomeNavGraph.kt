@@ -8,14 +8,16 @@ import com.jaehan.soop.ui.screen.home.HomeRoute
 
 fun NavGraphBuilder.homeNavGraph(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    onShowError: (String) -> Unit,
 ) {
     composable<Route.Home> {
         HomeRoute(
             modifier = modifier,
             onNavigateToDetail = { owner, repositoryName ->
                 navController.navigateToDetail(owner = owner, repositoryName = repositoryName)
-            }
+            },
+            onShowError = { onShowError(it) }
         )
     }
 }

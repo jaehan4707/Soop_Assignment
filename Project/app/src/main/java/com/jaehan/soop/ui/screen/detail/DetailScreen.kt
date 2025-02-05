@@ -10,36 +10,55 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.jaehan.soop.ui.componenet.LoadingDialog
 import com.jaehan.soop.ui.screen.detail.layout.RepositoryStatsRow
 import com.jaehan.soop.ui.screen.detail.layout.TopicChips
 import com.jaehan.soop.ui.screen.detail.layout.UserProfile
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 import com.jaehan.soop.ui.theme.lightGray
+import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
 fun DetailRoute(
     modifier: Modifier,
-    owner: String,
-    repositoryName: String,
-    onPopUpBackStack: () -> Unit,
+    viewModel: DetailViewModel = hiltViewModel(),
+    onShowError: (String) -> Unit,
 ) {
-    DetailScreen(
-        modifier = modifier,
-        repositoryName = repositoryName,
-        topics = listOf(),
-        star = 0L,
-        watchers = 0L,
-        fork = 0L,
-        description = "",
-        userProfileImage = "",
-        userName = owner
-    )
+    val uiState by viewModel.uiState.collectAsState()
+    val uiEvent = viewModel.uiEvent
+    LaunchedEffect(uiEvent) {
+        uiEvent.collectLatest { event ->
+            when (event) {
+                is DetailUiEvent.ShowError -> onShowError(event.errorMessage)
+            }
+        }
+    }
+
+    if (uiState.isLoading) {
+        LoadingDialog(modifier = modifier)
+    } else {
+        DetailScreen(
+            modifier = modifier,
+            repositoryName = uiState.repositoryName,
+            topics = uiState.topics,
+            star = uiState.starCount,
+            watchers = uiState.watchers,
+            fork = uiState.forks,
+            description = uiState.description,
+            userProfileImage = uiState.userProfileImage,
+            userName = uiState.userName,
+        )
+    }
 }
 
 

@@ -4,21 +4,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.jaehan.soop.ui.screen.detail.DetailRoute
 
 fun NavGraphBuilder.detailNavGraph(
     modifier: Modifier,
-    navController: NavController
+    onShowError: (String) -> Unit,
 ) {
-    composable<Route.Detail> { backStackEntry ->
-        val owner = backStackEntry.toRoute<Route.Detail>().owner
-        val repositoryName = backStackEntry.toRoute<Route.Detail>().repositoryName
+    composable<Route.Detail> {
         DetailRoute(
             modifier = modifier,
-            owner = owner,
-            repositoryName = repositoryName,
-            onPopUpBackStack = navController::popBackStack
+            onShowError = onShowError,
         )
     }
 }

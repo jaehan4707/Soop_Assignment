@@ -10,11 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jaehan.soop.R
 import com.jaehan.soop.ui.theme.SOOP_Theme
+import com.jaehan.soop.ui.util.toKFormat
 
 @Composable
 fun StatColumn(modifier: Modifier, topic: String, count: Long) {
@@ -27,7 +26,7 @@ fun StatColumn(modifier: Modifier, topic: String, count: Long) {
         Text(text = topic)
         Spacer(modifier = Modifier.weight(0.1f))
         Text(
-            text = stringResource(id = R.string.start_count, count / 1000.0),
+            text = count.toKFormat(),
             color = Color.Gray,
         )
         Spacer(modifier = Modifier.weight(0.5f))
