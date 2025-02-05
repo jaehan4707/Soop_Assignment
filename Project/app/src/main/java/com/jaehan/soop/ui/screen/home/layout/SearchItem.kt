@@ -1,4 +1,4 @@
-package com.jaehan.soop.ui.componenet
+package com.jaehan.soop.ui.screen.home.layout
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -26,6 +25,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.jaehan.soop.R
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
+import com.jaehan.soop.ui.util.toKFormat
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -64,26 +64,30 @@ fun SearchItem(
             )
         }
         Text(text = repositoryName, style = Typography.bodyMedium)
-        Text(text = description, style = Typography.labelSmall)
+        if (description.isNotBlank()) {
+            Text(text = description, style = Typography.labelSmall)
+        }
         Row(
             modifier = Modifier, verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(painter = painterResource(id = R.drawable.ic_star), contentDescription = "star")
             Spacer(modifier = Modifier.width(3.dp))
             Text(
-                text = stringResource(id = R.string.start_count, star / 1000.0),
+                text = star.toKFormat(),
                 color = Color.Gray,
                 style = Typography.labelSmall
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Spacer(
-                modifier = Modifier
-                    .size(15.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black)
-            )
-            Spacer(modifier = Modifier.width(3.dp))
-            Text(text = language, color = Color.Gray, style = Typography.labelSmall)
+            if (language.isNotBlank()) {
+                Spacer(
+                    modifier = Modifier
+                        .size(15.dp)
+                        .clip(CircleShape)
+                        .background(Color.Black)
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(text = language, color = Color.Gray, style = Typography.labelSmall)
+            }
         }
     }
 }

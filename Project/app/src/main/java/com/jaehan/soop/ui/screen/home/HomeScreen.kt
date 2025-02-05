@@ -27,8 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaehan.soop.R
 import com.jaehan.soop.domain.model.Repo
 import com.jaehan.soop.ui.componenet.LoadingDialog
-import com.jaehan.soop.ui.componenet.SearchItem
 import com.jaehan.soop.ui.componenet.SearchTextField
+import com.jaehan.soop.ui.screen.home.layout.SearchItem
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.lightGray
 import kotlinx.coroutines.flow.SharedFlow
