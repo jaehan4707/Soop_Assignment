@@ -90,4 +90,7 @@ dependencies {
 
     // navigation
     implementation(libs.jetpack.navigation)
+
+    // paging
+    implementation(libs.bundles.paging)
 }
