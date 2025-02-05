@@ -70,7 +70,7 @@ fun HomeContent(
         }
     }
 
-    MainScreen(
+    HomeScreen(
         modifier = modifier,
         onClickedSearch = onClickedSearch,
         results = uiState.results,
@@ -82,7 +82,7 @@ fun HomeContent(
 
 
 @Composable
-fun MainScreen(
+fun HomeScreen(
     modifier: Modifier = Modifier,
     results: List<Repo> = listOf(),
     onClickedSearch: (String) -> Unit = {},
@@ -149,8 +149,8 @@ fun MainScreen(
 
 @Composable
 @Preview(showSystemUi = true)
-fun MainScreenPreview() {
+fun HomeScreenPreview() {
     SOOP_Theme {
-        MainScreen()
+        HomeScreen()
     }
 }
