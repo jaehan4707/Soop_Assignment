@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.plugin)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -73,4 +76,17 @@ dependencies {
 
     // serialization
     implementation(libs.kotlinx.serialization.json)
+
+    //hilt
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
+
+    // coroutine
+    implementation(libs.bundles.coroutine)
+
+    // retrofit, okHttp, gson
+    implementation(libs.bundles.network)
+
+    // navigation
+    implementation(libs.jetpack.navigation)
 }
