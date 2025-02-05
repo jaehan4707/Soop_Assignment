@@ -21,6 +21,28 @@ import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 import com.jaehan.soop.ui.theme.lightGray
 
+
+@Composable
+fun DetailRoute(
+    modifier: Modifier,
+    owner: String,
+    repositoryName: String,
+    onPopUpBackStack: () -> Unit,
+) {
+    DetailScreen(
+        modifier = modifier,
+        repositoryName = repositoryName,
+        topics = listOf(),
+        star = 0L,
+        watchers = 0L,
+        fork = 0L,
+        description = "",
+        userProfileImage = "",
+        userName = owner
+    )
+}
+
+
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
