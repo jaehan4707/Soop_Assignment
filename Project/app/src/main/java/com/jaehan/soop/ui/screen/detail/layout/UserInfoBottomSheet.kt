@@ -34,7 +34,7 @@ fun UserInfoBottomSheet(
     following: Long,
     language: List<String>,
     repositories: Long,
-    bio: List<String>,
+    bio: String,
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
     ModalBottomSheet(
@@ -72,7 +72,7 @@ fun UserInfoBottomSheet(
             UserInfoRow(label = "Following", value = "$following")
             UserInfoRow(label = "Language", value = "${language.joinToString(", ")}")
             UserInfoRow(label = "Repositories", value = "$repositories")
-            UserInfoRow(label = "Bio", value = "${bio.joinToString(", ")}")
+            UserInfoRow(label = "Bio", value = bio)
         }
     }
 }
@@ -89,7 +89,7 @@ fun UserInfoBottomSheetPreview() {
             following = 92,
             repositories = 27,
             userName = "jaehan4707",
-            bio = listOf("jaehan4707","android","kotlin","java"),
+            bio = "",
             language = listOf("kotlin", "java")
         )
     }

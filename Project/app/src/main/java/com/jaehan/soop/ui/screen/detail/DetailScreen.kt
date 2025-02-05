@@ -13,14 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaehan.soop.ui.componenet.LoadingDialog
 import com.jaehan.soop.ui.screen.detail.layout.RepositoryStatsRow
 import com.jaehan.soop.ui.screen.detail.layout.TopicChips
+import com.jaehan.soop.ui.screen.detail.layout.UserInfoBottomSheet
 import com.jaehan.soop.ui.screen.detail.layout.UserProfile
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
@@ -34,8 +39,9 @@ fun DetailRoute(
     viewModel: DetailViewModel = hiltViewModel(),
     onShowError: (String) -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState().value
     val uiEvent = viewModel.uiEvent
+    val bottomDetailUiState = viewModel.bottomDetailUiState.collectAsStateWithLifecycle().value
     LaunchedEffect(uiEvent) {
         uiEvent.collectLatest { event ->
             when (event) {
@@ -57,6 +63,12 @@ fun DetailRoute(
             description = uiState.description,
             userProfileImage = uiState.userProfileImage,
             userName = uiState.userName,
+            getUserInfo = viewModel::getUserInfo,
+            following = bottomDetailUiState.following,
+            followers = bottomDetailUiState.followers,
+            repositories = bottomDetailUiState.repositoryCount,
+            bio = bottomDetailUiState.bio,
+            language = listOf(),
         )
     }
 }
@@ -73,7 +85,29 @@ fun DetailScreen(
     description: String,
     userProfileImage: String,
     userName: String,
+    getUserInfo: (String) -> Unit,
+    followers: Long,
+    following: Long,
+    language: List<String>,
+    repositories: Long,
+    bio: String,
 ) {
+    var isOpenBottomSheet by remember { mutableStateOf(false) }
+
+    if (isOpenBottomSheet) {
+        UserInfoBottomSheet(
+            modifier = modifier,
+            onClosedBottomSheet = { isOpenBottomSheet = false },
+            userProfileImage = userProfileImage,
+            userName = userName,
+            followers = followers,
+            following = following,
+            language = language,
+            repositories = repositories,
+            bio = bio,
+        )
+    }
+
     Column(
         modifier =
         modifier
@@ -92,7 +126,10 @@ fun DetailScreen(
             modifier = Modifier,
             userProfileImage = userProfileImage,
             userName = userName,
-            onClickedMore = {}
+            onClickedMore = {
+                isOpenBottomSheet = true
+                getUserInfo(it)
+            },
         )
         Spacer(modifier = Modifier.weight(0.05f))
         HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
@@ -124,7 +161,13 @@ fun DetailScreenPreview() {
             fork = 3100,
             description = "asdasedadsadsad",
             userProfileImage = "https://avatars.githubusercontent.com/u/99114456?v=4",
-            userName = "jaehan4707"
+            userName = "jaehan4707",
+            getUserInfo = {},
+            followers = 0,
+            following = 0,
+            language = listOf(),
+            bio = "",
+            repositories = 0,
         )
     }
 }
