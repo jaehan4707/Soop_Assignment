@@ -13,8 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,33 +22,74 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaehan.soop.R
-import com.jaehan.soop.domain.model.SearchResult
-import com.jaehan.soop.ui.componenet.SearchItem
+import com.jaehan.soop.domain.model.Repo
+import com.jaehan.soop.ui.componenet.LoadingDialog
 import com.jaehan.soop.ui.componenet.SearchTextField
+import com.jaehan.soop.ui.screen.home.layout.SearchItem
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.lightGray
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
-val sampleItem =
-    SearchResult(
-        id = 1,
-        userProfileImage = "https://avatars.githubusercontent.com/u/99114456?v=4",
-        userName = "jaehan4707",
-        repositoryName = "Soop",
-        starCount = 15000,
-        description = "description",
-        language = "Kotlin"
+@Composable
+fun HomeRoute(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
+    onShowError: (String) -> Unit = {},
+) {
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    HomeContent(
+        modifier = modifier,
+        onClickedSearch = viewModel::searchRepositories,
+        uiState = uiState.value,
+        uiEvent = viewModel.uiEvent,
+        updateQuery = viewModel::updateSearchText,
+        onShowError = onShowError,
     )
-val sampleData = List(8) { index ->
-    sampleItem.copy(id = index + 1)
 }
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
-    val (searchText, setSearchText) =
-        remember {
-            mutableStateOf("")
+fun HomeContent(
+    modifier: Modifier,
+    onClickedSearch: (String) -> Unit,
+    uiState: HomeUiState,
+    uiEvent: SharedFlow<HomeUiEvent>,
+    updateQuery: (String) -> Unit,
+    onShowError: (String) -> Unit = {},
+) {
+    LaunchedEffect(uiEvent) {
+        uiEvent.collectLatest { event ->
+            when (event) {
+                is HomeUiEvent.ShowError -> {
+                    onShowError(event.errorMessage)
+                }
+            }
         }
+    }
+
+    HomeScreen(
+        modifier = modifier,
+        onClickedSearch = onClickedSearch,
+        results = uiState.results,
+        updateQuery = updateQuery,
+        query = uiState.query,
+        isLoading = uiState.isLoading,
+    )
+}
+
+
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    results: List<Repo> = listOf(),
+    onClickedSearch: (String) -> Unit = {},
+    updateQuery: (String) -> Unit = {},
+    query: String = "",
+    isLoading: Boolean = false,
+) {
     val focusManager = LocalFocusManager.current
     Column(
         modifier =
@@ -66,38 +106,42 @@ fun MainScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(15.dp))
         SearchTextField(
             modifier = Modifier,
-            searchText = searchText,
-            onTextChanged = { setSearchText(it) },
-            onClickedClear = { setSearchText("") },
+            searchText = query,
+            onTextChanged = { updateQuery(it) },
+            onClickedClear = { updateQuery("") },
             placeHolder = stringResource(id = R.string.search_placeholder),
             focusManager = focusManager,
+            onClickedSearch = onClickedSearch,
         )
-
-        LazyColumn(
-            contentPadding = PaddingValues(all = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            itemsIndexed(
-                items = sampleData,
-                key = { _, result ->
-                    result.id
+        if (isLoading) {
+            LoadingDialog(modifier = Modifier)
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(all = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                itemsIndexed(
+                    items = results,
+                    key = { _, result ->
+                        result.id
+                    }
+                ) { _, result ->
+                    SearchItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        userImage = result.userProfileImage,
+                        repositoryName = result.repositoryName,
+                        description = result.description,
+                        star = result.starCount,
+                        language = result.language,
+                        userName = result.userName,
+                    )
+                    Spacer(modifier = Modifier.height(3.dp))
+                    HorizontalDivider(
+                        modifier = Modifier,
+                        thickness = 1.dp,
+                        color = Color.Gray
+                    )
                 }
-            ) { _, result ->
-                SearchItem(
-                    modifier = Modifier.fillMaxWidth(),
-                    userImage = result.userProfileImage,
-                    repositoryName = result.repositoryName,
-                    description = result.description,
-                    star = result.starCount,
-                    language = result.language,
-                    userName = result.userName,
-                )
-                Spacer(modifier = Modifier.height(3.dp))
-                HorizontalDivider(
-                    modifier = Modifier,
-                    thickness = 1.dp,
-                    color = Color.Gray
-                )
             }
         }
     }
@@ -105,8 +149,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
 
 @Composable
 @Preview(showSystemUi = true)
-fun MainScreenPreview() {
+fun HomeScreenPreview() {
     SOOP_Theme {
-        MainScreen()
+        HomeScreen()
     }
 }
