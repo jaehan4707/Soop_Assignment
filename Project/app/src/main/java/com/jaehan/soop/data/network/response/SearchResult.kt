@@ -1,6 +1,7 @@
 package com.jaehan.soop.data.network.response
 
 import com.google.gson.annotations.SerializedName
+import com.jaehan.soop.domain.model.Repo
 
 data class SearchResult(
     val id: Int = 0,
@@ -14,3 +15,17 @@ data class SearchResult(
     @SerializedName("language")
     val language: String? = "",
 )
+
+fun mapToRepo(apiItems: List<SearchResult>): List<Repo> {
+    return apiItems.map {
+        Repo(
+            id = it.id,
+            userName = it.owner.login,
+            userProfileImage = it.owner.userProfileImage,
+            repositoryName = it.repositoryName ?: "",
+            description = it.description ?: "",
+            starCount = it.starCount ?: 0,
+            language = it.language ?: "",
+        )
+    }
+}
