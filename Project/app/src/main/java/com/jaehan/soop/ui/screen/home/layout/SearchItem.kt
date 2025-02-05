@@ -25,6 +25,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.jaehan.soop.R
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
+import com.jaehan.soop.ui.theme.getLanguageColor
 import com.jaehan.soop.ui.util.toKFormat
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -83,7 +84,7 @@ fun SearchItem(
                     modifier = Modifier
                         .size(15.dp)
                         .clip(CircleShape)
-                        .background(Color.Black)
+                        .background(getLanguageColor(language))
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(text = language, color = Color.Gray, style = Typography.labelSmall)
