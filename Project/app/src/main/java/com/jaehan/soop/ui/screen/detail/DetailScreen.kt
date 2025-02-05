@@ -75,6 +75,8 @@ fun DetailScreen(
         )
         Spacer(modifier = Modifier.weight(0.05f))
         HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+        Text(text = "Description", style = Typography.titleLarge)
+        Text(text = description, style = Typography.labelLarge, color = Color.Gray)
         Spacer(modifier = Modifier.weight(1f))
     }
 }
