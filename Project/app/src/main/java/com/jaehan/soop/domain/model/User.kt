@@ -7,4 +7,5 @@ data class User(
     val following: Long,
     val bio: String,
     val repositoryCount: Long,
+    val languages: List<String>
 )

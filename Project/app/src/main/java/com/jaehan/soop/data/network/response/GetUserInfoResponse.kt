@@ -21,5 +21,6 @@ fun GetUserInfoResponse.mapToUser() = User(
     bio = this.bio ?: "",
     repositoryCount = this.repositoryCount ?: 0,
     userName = this.name ?: "",
-    userProfileImage = this.userProfileImage ?: ""
+    userProfileImage = this.userProfileImage ?: "",
+    languages = listOf(),
 )

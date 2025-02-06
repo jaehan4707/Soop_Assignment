@@ -70,6 +70,7 @@ fun DetailRoute(
             bio = bottomDetailUiState.bio,
             language = bottomDetailUiState.language,
             isBottomLoading = bottomDetailUiState.isLoading,
+            isLoaded = bottomDetailUiState.userName.isBlank(),
         )
     }
 }
@@ -93,8 +94,15 @@ fun DetailScreen(
     repositories: Long,
     bio: String,
     isBottomLoading: Boolean,
+    isLoaded: Boolean,
 ) {
     var isOpenBottomSheet by remember { mutableStateOf(false) }
+
+    if (isOpenBottomSheet && isLoaded) {
+        LaunchedEffect(userName) {
+            getUserInfoAndRepositories(userName)
+        }
+    }
 
     if (isOpenBottomSheet) {
         UserInfoBottomSheet(
@@ -131,7 +139,6 @@ fun DetailScreen(
             userName = userName,
             onClickedMore = {
                 isOpenBottomSheet = true
-                getUserInfoAndRepositories(it)
             },
         )
         Spacer(modifier = Modifier.weight(0.05f))
@@ -172,6 +179,7 @@ fun DetailScreenPreview() {
             bio = "",
             repositories = 0,
             isBottomLoading = false,
+            isLoaded = false,
         )
     }
 }
