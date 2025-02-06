@@ -77,6 +77,8 @@ class DetailViewModel @Inject constructor(
             userInfoFlow
                 .combine(userReposFlow) { userInfoResponse, userReposResponse ->
                     Pair(userInfoResponse, userReposResponse)
+                }.onStart {
+                    _bottomDetailUiState.update { it.copy(isLoading = true) }
                 }.collectLatest { (userInfoResponse, userReposResponse) ->
                     var state = when (userInfoResponse) {
                         is ApiResponse.Error -> {
@@ -106,7 +108,7 @@ class DetailViewModel @Inject constructor(
                             state = state.copy(language = userReposResponse.data)
                         }
                     }
-                    _bottomDetailUiState.value = state
+                    _bottomDetailUiState.value = state.copy(isLoading = false)
                 }
         }
     }
