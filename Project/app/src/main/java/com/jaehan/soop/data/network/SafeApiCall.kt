@@ -13,14 +13,9 @@ suspend fun <T> safeApiCall(
         if (response.isSuccessful) {
             ApiResponse.Success(data = response.body() ?: default)
         } else {
-            val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-            if (errorMessage == "Unknown error") {
-                ApiResponse.Error.UnknownError(errorMessage)
-            } else {
-                ApiResponse.Error.ServerError(response.code(), errorMessage)
-            }
+            ApiResponse.Error.fromCode(response.code())
         }
     }.getOrElse {
-        ApiResponse.Error.NetworkError(it.message ?: "Network error")
+        ApiResponse.Error.UnknownError()
     }
 }
