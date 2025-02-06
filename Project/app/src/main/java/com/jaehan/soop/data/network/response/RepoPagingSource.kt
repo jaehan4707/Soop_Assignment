@@ -21,7 +21,7 @@ class RepoPagingSource(
         return when (response) {
             is ApiResponse.Success -> {
                 LoadResult.Page(
-                    data = mapToRepo(response.data.items),
+                    data = response.data.items.mapToRepo(),
                     prevKey = if (currentPage == 1) null else currentPage - 1,
                     nextKey = if (response.data.items.isEmpty()) null else currentPage + 1
                 )
