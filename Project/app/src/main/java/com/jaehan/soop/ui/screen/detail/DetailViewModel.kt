@@ -38,7 +38,7 @@ class DetailViewModel @Inject constructor(
         getRepositoryInfo(owner, repositoryName)
     }
 
-    private fun getRepositoryInfo(owner: String, repositoryName: String) {
+    fun getRepositoryInfo(owner: String, repositoryName: String) {
         viewModelScope.launch {
             repoRepository.getRepositoryInfo(owner = owner, repositoryName = repositoryName)
                 .onStart {
