@@ -16,10 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.jaehan.soop.R
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 
@@ -68,11 +70,14 @@ fun UserInfoBottomSheet(
                 )
                 Text(text = userName, style = Typography.bodyLarge)
             }
-            UserInfoRow(label = "Followers", value = "$followers")
-            UserInfoRow(label = "Following", value = "$following")
-            UserInfoRow(label = "Language", value = "${language.joinToString(", ")}")
-            UserInfoRow(label = "Repositories", value = "$repositories")
-            UserInfoRow(label = "Bio", value = bio)
+            UserInfoRow(label = stringResource(R.string.followers), value = "$followers")
+            UserInfoRow(label = stringResource(R.string.following), value = "$following")
+            UserInfoRow(
+                label = stringResource(R.string.language),
+                value = "${language.joinToString(", ")}"
+            )
+            UserInfoRow(label = stringResource(R.string.repositories), value = "$repositories")
+            UserInfoRow(label = stringResource(R.string.bio), value = bio)
         }
     }
 }

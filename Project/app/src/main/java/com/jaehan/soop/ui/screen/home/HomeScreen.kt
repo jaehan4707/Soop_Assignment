@@ -1,6 +1,5 @@
 package com.jaehan.soop.ui.screen.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -133,7 +132,7 @@ fun HomeScreen(
                 }
 
                 is LoadState.Error -> {
-                    onShowError("로딩 오류!")
+                    onShowError(stringResource(R.string.error_message))
                 }
 
                 else -> {
@@ -153,7 +152,6 @@ fun HomeScreen(
                                     language = repo.language,
                                     userName = repo.userName,
                                     onClick = {
-                                        Log.d("test","clcickckck")
                                         onNavigateToDetail(repo.userName, repo.repositoryName)
                                     }
                                 )
