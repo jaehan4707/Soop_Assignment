@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.jaehan.soop.domain.model.ApiResponse
 import com.jaehan.soop.domain.model.Repo
+import com.jaehan.soop.domain.model.User
 import com.jaehan.soop.domain.repository.RepoRepository
 import com.jaehan.soop.domain.repository.UserRepository
 import com.jaehan.soop.ui.screen.detail.DetailViewModel
@@ -35,6 +36,15 @@ class DetailViewModelTest {
         description = "Description",
         userProfileImage = "profileImageUrl",
         topics = listOf("topic1", "topic2")
+    )
+
+    private val fakeUser = User(
+        userName = "jaehan4707",
+        followers = 100,
+        following = 50,
+        repositoryCount = 10,
+        bio = "Bio",
+        userProfileImage = "profileImageUrl"
     )
 
     @Before
@@ -78,6 +88,42 @@ class DetailViewModelTest {
             assertEquals(fakeRepo.description, state.description)
             assertEquals(fakeRepo.userProfileImage, state.userProfileImage)
             assertEquals(fakeRepo.topics, state.topics)
+        }
+    }
+
+    @Test
+    fun `사용자의 상세 정보를 조회할 수 있다`() = runTest {
+        //given
+        val languages = listOf("kotlin", "java")
+        coEvery { userRepository.getUserInfo(fakeUser.userName) } returns flowOf(
+            ApiResponse.Success(fakeUser)
+        )
+        coEvery { userRepository.getUserRepositories(fakeUser.userName) } returns flowOf(
+            ApiResponse.Success(languages)
+        )
+
+        coEvery {
+            repoRepository.getRepositoryInfo(
+                fakeRepo.userName,
+                fakeRepo.repositoryName
+            )
+        } returns flowOf()
+        viewModel = DetailViewModel(repoRepository, userRepository, savedStateHandle)
+
+        //when
+        viewModel.getUserInfoAndRepositories(fakeUser.userName)
+
+        //then
+        viewModel.bottomDetailUiState.test {
+            val state = awaitItem()
+            assertFalse(state.isLoading)
+            assertEquals(fakeUser.followers, state.followers)
+            assertEquals(fakeUser.following, state.following)
+            assertEquals(fakeUser.repositoryCount, state.repositoryCount)
+            assertEquals(fakeUser.bio, state.bio)
+            assertEquals(fakeUser.userName, state.userName)
+            assertEquals(fakeUser.userProfileImage, state.userProfileImage)
+            assertEquals(languages, state.language)
         }
     }
 }
