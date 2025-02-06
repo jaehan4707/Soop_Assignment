@@ -69,6 +69,7 @@ fun DetailRoute(
             repositories = bottomDetailUiState.repositoryCount,
             bio = bottomDetailUiState.bio,
             language = bottomDetailUiState.language,
+            isBottomLoading = bottomDetailUiState.isLoading,
         )
     }
 }
@@ -91,6 +92,7 @@ fun DetailScreen(
     language: List<String>,
     repositories: Long,
     bio: String,
+    isBottomLoading: Boolean,
 ) {
     var isOpenBottomSheet by remember { mutableStateOf(false) }
 
@@ -105,6 +107,7 @@ fun DetailScreen(
             language = language,
             repositories = repositories,
             bio = bio,
+            isLoading = isBottomLoading,
         )
     }
 
@@ -168,6 +171,7 @@ fun DetailScreenPreview() {
             language = listOf(),
             bio = "",
             repositories = 0,
+            isBottomLoading = false,
         )
     }
 }

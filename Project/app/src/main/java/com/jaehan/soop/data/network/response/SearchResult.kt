@@ -16,16 +16,14 @@ data class SearchResult(
     val language: String? = "",
 )
 
-fun mapToRepo(apiItems: List<SearchResult>): List<Repo> {
-    return apiItems.map {
-        Repo(
-            id = it.id,
-            userName = it.owner.login,
-            userProfileImage = it.owner.userProfileImage,
-            repositoryName = it.repositoryName ?: "",
-            description = it.description ?: "",
-            starCount = it.starCount ?: 0,
-            language = it.language ?: "",
-        )
-    }
+fun List<SearchResult>.mapToRepo() = this.map {
+    Repo(
+        id = it.id,
+        userName = it.owner.login,
+        userProfileImage = it.owner.userProfileImage,
+        repositoryName = it.repositoryName ?: "",
+        description = it.description ?: "",
+        starCount = it.starCount ?: 0,
+        language = it.language ?: "",
+    )
 }

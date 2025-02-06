@@ -22,6 +22,12 @@ import androidx.compose.ui.unit.dp
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 
+/**
+ * TODO
+ *
+ * @param modifier
+ * @param topics : topic 리스트
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TopicChips(

@@ -8,4 +8,5 @@ data class BottomDetailUiState(
     val bio: String = "",
     val userProfileImage: String = "",
     val userName: String = "",
+    val isLoading: Boolean = false,
 )

@@ -29,6 +29,18 @@ import com.jaehan.soop.ui.theme.Typography
 import com.jaehan.soop.ui.theme.getLanguageColor
 import com.jaehan.soop.ui.util.toKFormat
 
+/**
+ * TODO
+ *
+ * @param modifier
+ * @param userImage : 유저 프로필 이미지
+ * @param repositoryName : 레포지토리 이름
+ * @param description : 레포지토리 설명
+ * @param star : 스타 개수
+ * @param language : 대표 언어
+ * @param userName : 유저 이름
+ * @param onClick : 클릭 람다식
+ */
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SearchItem(

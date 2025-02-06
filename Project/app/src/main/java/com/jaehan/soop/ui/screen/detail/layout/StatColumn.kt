@@ -15,6 +15,13 @@ import androidx.compose.ui.unit.dp
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.util.toKFormat
 
+/**
+ * TODO
+ *
+ * @param modifier
+ * @param topic : 제목
+ * @param count : 값
+ */
 @Composable
 fun StatColumn(modifier: Modifier, topic: String, count: Long) {
     Column(
