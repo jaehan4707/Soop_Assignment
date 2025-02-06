@@ -31,6 +31,12 @@ navigation = "2.8.3"
 #paging
 paging = "3.3.2"
 
+#mockk
+mockk = "1.13.16"
+
+#turbine
+turbine = "1.2.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glide-compose" }
@@ -67,11 +73,18 @@ jetpack-navigation = { group = "androidx.navigation", name = "navigation-compose
 #Coroutine
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx" }
 
 # paging
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+paging-test = { module = "androidx.paging:paging-testing", version.ref = "paging" }
 
+# mockk
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
+# turbine
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
