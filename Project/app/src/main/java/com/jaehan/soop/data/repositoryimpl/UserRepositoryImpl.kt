@@ -46,7 +46,7 @@ class UserRepositoryImpl @Inject constructor(
                         ApiResponse.Success(data =
                         response.data.mapNotNull {
                             it.language
-                        })
+                        }.toSet().toList())
                     )
                 }
             }
