@@ -14,6 +14,14 @@ import androidx.compose.ui.unit.dp
 import com.jaehan.soop.R
 import com.jaehan.soop.ui.theme.SOOP_Theme
 
+/**
+ * TODO
+ *
+ * @param modifier
+ * @param star : 스타 개수
+ * @param watchers : watchers 개수
+ * @param fork : 포크 수
+ */
 @Composable
 fun RepositoryStatsRow(modifier: Modifier, star: Long, watchers: Long, fork: Long) {
     Row(

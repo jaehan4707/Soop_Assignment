@@ -24,6 +24,14 @@ import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 import com.jaehan.soop.ui.theme.skyBlue
 
+/**
+ * TODO
+ *
+ * @param modifier
+ * @param userProfileImage : 유저 프로필 이미지
+ * @param userName : 유저 이름
+ * @param onClickedMore : More 버튼 클릭 람다식
+ */
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun UserProfile(

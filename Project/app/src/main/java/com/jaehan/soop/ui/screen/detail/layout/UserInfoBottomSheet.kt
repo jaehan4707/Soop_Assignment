@@ -25,6 +25,19 @@ import com.jaehan.soop.R
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 
+/**
+ * TODO
+ *
+ * @param modifier
+ * @param onClosedBottomSheet : BottomSheet 닫는 람다식
+ * @param userProfileImage : 유저 프로필 이미지
+ * @param userName : 유저 이름
+ * @param followers : 팔로워 수
+ * @param following : 팔로잉 수
+ * @param language : 언어
+ * @param repositories : 레포지토리 수
+ * @param bio : bio
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
 fun UserInfoBottomSheet(

@@ -12,6 +12,12 @@ import androidx.compose.ui.unit.dp
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
 
+/**
+ * TODO
+ *
+ * @param label : 값 종류
+ * @param value : 값
+ */
 @Composable
 fun UserInfoRow(label: String, value: String) {
     Row(
