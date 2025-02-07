@@ -18,10 +18,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jaehan.soop.R
 import com.jaehan.soop.ui.componenet.LoadingDialog
 import com.jaehan.soop.ui.screen.detail.layout.RepositoryStatsRow
 import com.jaehan.soop.ui.screen.detail.layout.TopicChips
@@ -70,7 +72,7 @@ fun DetailRoute(
             bio = bottomDetailUiState.bio,
             language = bottomDetailUiState.language,
             isBottomLoading = bottomDetailUiState.isLoading,
-            isLoaded = bottomDetailUiState.userName.isBlank(),
+            isLoaded = bottomDetailUiState.userName.isNotBlank(),
         )
     }
 }
@@ -98,7 +100,7 @@ fun DetailScreen(
 ) {
     var isOpenBottomSheet by remember { mutableStateOf(false) }
 
-    if (isOpenBottomSheet && isLoaded) {
+    if (isOpenBottomSheet && !isLoaded) {
         LaunchedEffect(userName) {
             getUserInfoAndRepositories(userName)
         }
@@ -143,7 +145,7 @@ fun DetailScreen(
         )
         Spacer(modifier = Modifier.weight(0.05f))
         HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
-        Text(text = "Description", style = Typography.titleLarge)
+        Text(text = stringResource(R.string.description), style = Typography.titleLarge)
         Text(text = description, style = Typography.labelLarge, color = Color.Gray)
         Spacer(modifier = Modifier.weight(1f))
     }
