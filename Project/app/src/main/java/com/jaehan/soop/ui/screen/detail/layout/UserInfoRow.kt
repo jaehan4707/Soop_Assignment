@@ -1,5 +1,6 @@
 package com.jaehan.soop.ui.screen.detail.layout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
@@ -32,7 +33,17 @@ fun UserInfoRow(label: String, value: String) {
 
 @Composable
 @Preview
-fun UserInfoRowPreview(){
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
+fun UserInfoRowPreview() {
     SOOP_Theme {
         UserInfoRow(label = "Followers", value = "12345")
     }

@@ -1,6 +1,6 @@
 package com.jaehan.soop.ui.screen.detail
 
-import androidx.compose.foundation.background
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +31,6 @@ import com.jaehan.soop.ui.screen.detail.layout.UserInfoBottomSheet
 import com.jaehan.soop.ui.screen.detail.layout.UserProfile
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
-import com.jaehan.soop.ui.theme.lightGray
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -125,7 +124,6 @@ fun DetailScreen(
         modifier =
         modifier
             .fillMaxSize()
-            .background(color = lightGray)
             .padding(vertical = 20.dp, horizontal = 10.dp),
         verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
@@ -153,6 +151,11 @@ fun DetailScreen(
 
 @Composable
 @Preview(showSystemUi = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "darkMode")
 fun DetailScreenPreview() {
     SOOP_Theme {
         DetailScreen(

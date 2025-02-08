@@ -1,5 +1,6 @@
 package com.jaehan.soop.ui.screen.home.layout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -111,6 +112,16 @@ fun SearchItem(
 
 @Composable
 @Preview(showSystemUi = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 fun SearchItemPreview() {
     SOOP_Theme {
         SearchItem(
