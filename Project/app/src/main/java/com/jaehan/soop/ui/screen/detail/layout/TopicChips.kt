@@ -1,5 +1,6 @@
 package com.jaehan.soop.ui.screen.detail.layout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
@@ -46,14 +48,15 @@ fun TopicChips(
                 label = {
                     Text(
                         text = topic, style = Typography.bodyMedium,
-                        maxLines = 1, overflow = TextOverflow.Ellipsis
+                        maxLines = 1, overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.background
                     )
                 },
                 modifier = Modifier.widthIn(min = 50.dp, max = 110.dp),
                 shape = CircleShape,
                 border = BorderStroke(width = 1.dp, color = Color.Transparent),
                 colors = SuggestionChipDefaults.suggestionChipColors()
-                    .copy(containerColor = Color.LightGray)
+                    .copy(containerColor = MaterialTheme.colorScheme.primary)
             )
         }
     }
@@ -61,6 +64,16 @@ fun TopicChips(
 
 @Composable
 @Preview
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 fun TopicChipsPreview() {
     SOOP_Theme {
         TopicChips(

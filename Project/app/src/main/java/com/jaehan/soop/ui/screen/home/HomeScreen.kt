@@ -1,6 +1,6 @@
 package com.jaehan.soop.ui.screen.home
 
-import androidx.compose.foundation.background
+import android.content.res.Configuration
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,7 +32,6 @@ import com.jaehan.soop.ui.componenet.LoadingDialog
 import com.jaehan.soop.ui.componenet.SearchTextField
 import com.jaehan.soop.ui.screen.home.layout.SearchItem
 import com.jaehan.soop.ui.theme.SOOP_Theme
-import com.jaehan.soop.ui.theme.lightGray
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -107,7 +106,6 @@ fun HomeScreen(
         modifier =
         modifier
             .fillMaxSize()
-            .background(color = lightGray)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     focusManager.clearFocus()
@@ -171,6 +169,16 @@ fun HomeScreen(
 }
 
 @Composable
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 @Preview(showSystemUi = true)
 fun HomeScreenPreview() {
     SOOP_Theme {

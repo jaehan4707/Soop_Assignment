@@ -1,5 +1,6 @@
 package com.jaehan.soop.ui.screen.detail.layout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -68,6 +69,16 @@ fun UserProfile(
 
 @Composable
 @Preview(showSystemUi = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 fun UserProfilePreview() {
     SOOP_Theme {
         UserProfile(

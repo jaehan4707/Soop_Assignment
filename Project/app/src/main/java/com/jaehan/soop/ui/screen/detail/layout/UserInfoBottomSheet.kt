@@ -1,5 +1,6 @@
 package com.jaehan.soop.ui.screen.detail.layout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -103,7 +104,7 @@ fun UserInfoBottomSheet(
                 UserInfoRow(label = stringResource(R.string.following), value = "$following")
                 UserInfoRow(
                     label = stringResource(R.string.language),
-                    value = "${language.joinToString(", ")}"
+                    value = language.joinToString(", ")
                 )
                 UserInfoRow(label = stringResource(R.string.repositories), value = "$repositories")
                 UserInfoRow(label = stringResource(R.string.bio), value = bio)
@@ -114,6 +115,16 @@ fun UserInfoBottomSheet(
 
 @Composable
 @Preview(showSystemUi = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 fun UserInfoBottomSheetPreview() {
     SOOP_Theme {
         UserInfoBottomSheet(
@@ -125,7 +136,7 @@ fun UserInfoBottomSheetPreview() {
             userName = "jaehan4707",
             bio = "",
             language = listOf("kotlin", "java"),
-            isLoading = true
+            isLoading = false
         )
     }
 }

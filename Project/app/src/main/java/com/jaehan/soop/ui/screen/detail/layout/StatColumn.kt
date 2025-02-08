@@ -1,5 +1,6 @@
 package com.jaehan.soop.ui.screen.detail.layout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +44,16 @@ fun StatColumn(modifier: Modifier, topic: String, count: Long) {
 
 @Composable
 @Preview(showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 fun StatColumnPreview() {
     SOOP_Theme {
         StatColumn(
