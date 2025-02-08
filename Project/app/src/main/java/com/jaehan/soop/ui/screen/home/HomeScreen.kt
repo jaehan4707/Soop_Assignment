@@ -1,6 +1,6 @@
 package com.jaehan.soop.ui.screen.home
 
-import androidx.compose.foundation.background
+import android.content.res.Configuration
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,39 +21,91 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.jaehan.soop.R
-import com.jaehan.soop.domain.model.SearchResult
-import com.jaehan.soop.ui.componenet.SearchItem
+import com.jaehan.soop.domain.model.Repo
+import com.jaehan.soop.ui.componenet.LoadingDialog
 import com.jaehan.soop.ui.componenet.SearchTextField
+import com.jaehan.soop.ui.screen.home.layout.SearchItem
 import com.jaehan.soop.ui.theme.SOOP_Theme
-import com.jaehan.soop.ui.theme.lightGray
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
-val sampleItem =
-    SearchResult(
-        id = 1,
-        userProfileImage = "https://avatars.githubusercontent.com/u/99114456?v=4",
-        userName = "jaehan4707",
-        repositoryName = "Soop",
-        starCount = 15000,
-        description = "description",
-        language = "Kotlin"
+
+@Composable
+fun HomeRoute(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
+    onShowError: (String) -> Unit = {},
+    onNavigateToDetail: (String, String) -> Unit = { owner, repositoryName -> },
+) {
+    val query = viewModel.query.collectAsStateWithLifecycle()
+    val pageRepositories = viewModel.repositories.collectAsLazyPagingItems()
+    HomeContent(
+        modifier = modifier,
+        onClickedSearch = viewModel::searchRepositories,
+        query = query.value,
+        uiEvent = viewModel.uiEvent,
+        updateQuery = viewModel::updateSearchText,
+        onShowError = onShowError,
+        pageRepositories = pageRepositories,
+        onNavigateToDetail = onNavigateToDetail,
     )
-val sampleData = List(8) { index ->
-    sampleItem.copy(id = index + 1)
 }
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
-    val (searchText, setSearchText) =
-        remember {
-            mutableStateOf("")
+fun HomeContent(
+    modifier: Modifier,
+    onClickedSearch: (String) -> Unit,
+    query: String,
+    uiEvent: SharedFlow<HomeUiEvent>,
+    updateQuery: (String) -> Unit,
+    onShowError: (String) -> Unit = {},
+    pageRepositories: LazyPagingItems<Repo>,
+    onNavigateToDetail: (String, String) -> Unit = { owner, repositoryName -> },
+) {
+    LaunchedEffect(uiEvent) {
+        uiEvent.collectLatest { event ->
+            when (event) {
+                is HomeUiEvent.ShowError -> {
+                    onShowError(event.errorMessage)
+                }
+            }
         }
+    }
+
+    HomeScreen(
+        modifier = modifier,
+        onClickedSearch = onClickedSearch,
+        pageRepositories = pageRepositories,
+        updateQuery = updateQuery,
+        query = query,
+        onShowError = onShowError,
+        onNavigateToDetail = onNavigateToDetail,
+    )
+}
+
+
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    pageRepositories: LazyPagingItems<Repo>? = null,
+    onClickedSearch: (String) -> Unit = {},
+    updateQuery: (String) -> Unit = {},
+    query: String = "",
+    onShowError: (String) -> Unit = {},
+    onNavigateToDetail: (String, String) -> Unit = { owner, repositoryName -> },
+) {
     val focusManager = LocalFocusManager.current
+
     Column(
         modifier =
         modifier
             .fillMaxSize()
-            .background(color = lightGray)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     focusManager.clearFocus()
@@ -66,47 +116,72 @@ fun MainScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(15.dp))
         SearchTextField(
             modifier = Modifier,
-            searchText = searchText,
-            onTextChanged = { setSearchText(it) },
-            onClickedClear = { setSearchText("") },
+            searchText = query,
+            onTextChanged = { updateQuery(it) },
+            onClickedClear = { updateQuery("") },
             placeHolder = stringResource(id = R.string.search_placeholder),
             focusManager = focusManager,
+            onClickedSearch = onClickedSearch,
         )
-
-        LazyColumn(
-            contentPadding = PaddingValues(all = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            itemsIndexed(
-                items = sampleData,
-                key = { _, result ->
-                    result.id
+        pageRepositories?.let { repositories ->
+            when (repositories.loadState.refresh) {
+                is LoadState.Loading -> {
+                    LoadingDialog(modifier = Modifier.fillMaxSize())
                 }
-            ) { _, result ->
-                SearchItem(
-                    modifier = Modifier.fillMaxWidth(),
-                    userImage = result.userProfileImage,
-                    repositoryName = result.repositoryName,
-                    description = result.description,
-                    star = result.starCount,
-                    language = result.language,
-                    userName = result.userName,
-                )
-                Spacer(modifier = Modifier.height(3.dp))
-                HorizontalDivider(
-                    modifier = Modifier,
-                    thickness = 1.dp,
-                    color = Color.Gray
-                )
+
+                is LoadState.Error -> {
+                    onShowError(stringResource(R.string.error_message))
+                }
+
+                else -> {
+                    LazyColumn(
+                        contentPadding = PaddingValues(all = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(repositories.itemCount) { index ->
+                            val item = repositories[index]
+                            item?.let { repo ->
+                                SearchItem(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    userImage = repo.userProfileImage,
+                                    repositoryName = repo.repositoryName,
+                                    description = repo.description,
+                                    star = repo.starCount,
+                                    language = repo.language,
+                                    userName = repo.userName,
+                                    onClick = {
+                                        onNavigateToDetail(repo.userName, repo.repositoryName)
+                                    }
+                                )
+                                Spacer(modifier = Modifier.height(3.dp))
+                                HorizontalDivider(
+                                    modifier = Modifier,
+                                    thickness = 1.dp,
+                                    color = Color.Gray
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 @Preview(showSystemUi = true)
-fun MainScreenPreview() {
+fun HomeScreenPreview() {
     SOOP_Theme {
-        MainScreen()
+        HomeScreen()
     }
 }

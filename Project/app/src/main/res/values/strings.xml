@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">SOOP_ASSIGNMENT</string>
     <string name="search_placeholder">검색어를 입력해주세요.</string>
-    <string name="start_count">%.1fk</string>
+    <string name="error_message">데이터 로딩에 실패했습니다.</string>
+    <string name="star">Star</string>
+    <string name="watchers">Watchers</string>
+    <string name="forks">Forks</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="language">Language</string>
+    <string name="repositories">Repositories</string>
+    <string name="bio">Bio</string>
+    <string name="more_button_message">more</string>
+    <string name="description">Description</string>
 </resources>

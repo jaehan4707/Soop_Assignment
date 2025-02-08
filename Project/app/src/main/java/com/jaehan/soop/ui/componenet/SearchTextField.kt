@@ -1,5 +1,6 @@
 package com.jaehan.soop.ui.componenet
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -9,8 +10,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -19,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.jaehan.soop.R
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
-import com.jaehan.soop.ui.theme.lightGray
 
 /**
  * TODO
@@ -67,7 +70,7 @@ fun SearchTextField(
         placeholder = {
             Text(
                 text = placeHolder,
-                color = lightGray,
+                color = Color.Gray,
                 style = Typography.labelSmall,
             )
         },
@@ -76,10 +79,25 @@ fun SearchTextField(
 
 @Composable
 @Preview(showSystemUi = true, name = "SearchTextField")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 fun SearchTextFieldPreview() {
+    val (text, setText) = remember {
+        mutableStateOf("")
+    }
     SOOP_Theme {
         SearchTextField(
-            focusManager = LocalFocusManager.current
+            searchText = text,
+            focusManager = LocalFocusManager.current,
+            onTextChanged = { setText(it) },
         )
     }
 }

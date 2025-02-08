@@ -1,7 +1,9 @@
-package com.jaehan.soop.ui.componenet
+package com.jaehan.soop.ui.screen.home.layout
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -26,7 +27,21 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.jaehan.soop.R
 import com.jaehan.soop.ui.theme.SOOP_Theme
 import com.jaehan.soop.ui.theme.Typography
+import com.jaehan.soop.ui.theme.getLanguageColor
+import com.jaehan.soop.ui.util.toKFormat
 
+/**
+ * TODO
+ *
+ * @param modifier
+ * @param userImage : 유저 프로필 이미지
+ * @param repositoryName : 레포지토리 이름
+ * @param description : 레포지토리 설명
+ * @param star : 스타 개수
+ * @param language : 대표 언어
+ * @param userName : 유저 이름
+ * @param onClick : 클릭 람다식
+ */
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SearchItem(
@@ -37,9 +52,12 @@ fun SearchItem(
     star: Long,
     language: String,
     userName: String,
+    onClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 15.dp),
+        modifier = modifier
+            .padding(horizontal = 15.dp)
+            .clickable { onClick() },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
@@ -64,32 +82,46 @@ fun SearchItem(
             )
         }
         Text(text = repositoryName, style = Typography.bodyMedium)
-        Text(text = description, style = Typography.labelSmall)
+        if (description.isNotBlank()) {
+            Text(text = description, style = Typography.labelSmall)
+        }
         Row(
             modifier = Modifier, verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(painter = painterResource(id = R.drawable.ic_star), contentDescription = "star")
             Spacer(modifier = Modifier.width(3.dp))
             Text(
-                text = stringResource(id = R.string.start_count, star / 1000.0),
+                text = star.toKFormat(),
                 color = Color.Gray,
                 style = Typography.labelSmall
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Spacer(
-                modifier = Modifier
-                    .size(15.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black)
-            )
-            Spacer(modifier = Modifier.width(3.dp))
-            Text(text = language, color = Color.Gray, style = Typography.labelSmall)
+            if (language.isNotBlank()) {
+                Spacer(
+                    modifier = Modifier
+                        .size(15.dp)
+                        .clip(CircleShape)
+                        .background(getLanguageColor(language))
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(text = language, color = Color.Gray, style = Typography.labelSmall)
+            }
         }
     }
 }
 
 @Composable
 @Preview(showSystemUi = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true, name = "lightMode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "darkMode",
+    backgroundColor = 0xFF000000
+)
 fun SearchItemPreview() {
     SOOP_Theme {
         SearchItem(
@@ -98,7 +130,8 @@ fun SearchItemPreview() {
             description = "description",
             star = 14557,
             language = "kotlin",
-            userName = "android"
+            userName = "android",
+            onClick = {},
         )
     }
 }
